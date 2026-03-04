@@ -92,12 +92,12 @@ def checkFlags(cpu):
     #Overflow Flag
     if cpu.ALU > 255:
         bit1 = 1
-        cpu.ALU = cpu.ALU - 255
+        cpu.ALU = cpu.ALU - 256
 
     #Negative Flag
     if cpu.ALU < 0:
         bit2 = 1
-        cpu.ALU += 255
+        cpu.ALU += 256
 
     #Update the CPU flags
     cpu.Flags = int((str(bit3) + str(bit2) + str(bit1) + str(bit0)), 2)
