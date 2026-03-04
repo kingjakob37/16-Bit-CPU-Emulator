@@ -1,4 +1,4 @@
-program = []
+sprogram = []
 
 with open("CPUMemory.txt", "r") as f:
     for line in f:
@@ -110,96 +110,99 @@ while not halted:
     address2 = int(instruction[8:16], 2)
     conditionals = int(instruction[12:16], 2)
 
-    if opcode == 0:
-        halted = True
-        print("Ended on line: " + str(currentLine))
-        break
-    elif opcode == 1: #Add
-        cpu.ALU = cpu.registers[register1] + cpu.registers[register2]
-        cpu.ALU = checkFlags(cpu)
-        cpu.registers[register1] = cpu.ALU
-    elif opcode == 2: #Subtract
-        cpu.ALU = cpu.registers[register1] + cpu.registers[register2]
-        cpu.ALU = checkFlags(cpu)
-        cpu.registers[register1] = cpu.ALU
-    elif opcode == 3: #LOGIC
-        cpu.ALU = logic_ops[conditionals](cpu.registers[register1], cpu.registers[register2])
-        cpu.ALU = checkFlags(cpu)
-        cpu.registers[register1] = cpu.ALU
-    #Nothing for opcode 4 yet
-    elif opcode == 5: #Move
-        cpu.registers[register1] = cpu.registers[register2]
-    elif opcode == 6: #Store
-        cpu.Memory[address2] = cpu.registers[register1]
-    elif opcode == 7: #Load Address
-        cpu.registers[register1] = cpu.Memory[address2]
-    elif opcode == 8: #Load Immediate
-        cpu.registers[register1] = (address2)
-    elif opcode == 9: #Push
-        if conditionals == 0:
-            cpu.SP.append(cpu.registers[register1])
-        elif conditionals == 1:
-            cpu.SP.append(cpu.Memory[address1])
-    elif opcode == 10: #Pop
-        if conditionals == 0:
-            cpu.registers[register1] = cpu.SP.Pop()
-        elif conditionals == 1:
-            cpu.Memory[address1] = cpu.SP.Pop()
-    elif opcode == 11: #Increment
-        if conditionals == 0:
-            cpu.registers[register1] += 1
-        elif conditionals == 1:
-            cpu.Memory[address1] += 1
-    elif opcode == 12: #Decrement
-        if conditionals == 0:
-            cpu.registers[register1] -= 1
-        elif conditionals == 1:
-            cpu.Memory[address1] -= 1
-    elif opcode == 13: #Jump
-        if (str(bin(conditionals))[5:6]) == "0": #Jump to Register value
-            if (str(bin(conditionals))[2:5]) == "000":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "001" and str(bin(cpu.Flags))[5:6] == "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "010" and str(bin(cpu.Flags))[5:6] != "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "011" and str(bin(cpu.Flags))[4:5] == "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "100" and str(bin(cpu.Flags))[4:5] != "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "101" and str(bin(cpu.Flags))[3:4] == "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "110" and str(bin(cpu.Flags))[3:4] != "1":
-                cpu.SP = cpu.registers[register1]
-            elif (str(bin(conditionals))[2:5]) == "111" and str(bin(cpu.Flags))[2:3] == "1":
-                cpu.SP = cpu.registers[register1]
+    match opcode:
+        case 0: #Halt
+            halted = True
+            print("Ended on line: " + str(currentLine))
+            break
+        case 1: #Add
+            cpu.ALU = cpu.registers[register1] + cpu.registers[register2]
+            cpu.ALU = checkFlags(cpu)
+            cpu.registers[register1] = cpu.ALU
+        case 2: #Subtract
+            cpu.ALU = cpu.registers[register1] + cpu.registers[register2]
+            cpu.ALU = checkFlags(cpu)
+            cpu.registers[register1] = cpu.ALU
+        case 3: #LOGIC
+            cpu.ALU = logic_ops[conditionals](cpu.registers[register1], cpu.registers[register2])
+            cpu.ALU = checkFlags(cpu)
+            cpu.registers[register1] = cpu.ALU
+            
+        #Nothing for opcode 4 yet
+            
+        case 5: #Move
+            cpu.registers[register1] = cpu.registers[register2]
+        case 6: #Store
+            cpu.Memory[address2] = cpu.registers[register1]
+        case 7: #Load Address
+            cpu.registers[register1] = cpu.Memory[address2]
+        case 8: #Load Immediate
+            cpu.registers[register1] = (address2)
+        case 9: #Push
+            if conditionals == 0:
+                cpu.SP.append(cpu.registers[register1])
+            elif conditionals == 1:
+                cpu.SP.append(cpu.Memory[address1])
+        case 10: #Pop
+            if conditionals == 0:
+                cpu.registers[register1] = cpu.SP.Pop()
+            elif conditionals == 1:
+                cpu.Memory[address1] = cpu.SP.Pop()
+        case 11: #Increment
+            if conditionals == 0:
+                cpu.registers[register1] += 1
+            elif conditionals == 1:
+                cpu.Memory[address1] += 1
+        case 12: #Decrement
+            if conditionals == 0:
+                cpu.registers[register1] -= 1
+            elif conditionals == 1:
+                cpu.Memory[address1] -= 1
+        case 13: #Jump
+            if (str(bin(conditionals))[5:6]) == "0": #Jump to Register value
+                if (str(bin(conditionals))[2:5]) == "000":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "001" and str(bin(cpu.Flags))[5:6] == "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "010" and str(bin(cpu.Flags))[5:6] != "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "011" and str(bin(cpu.Flags))[4:5] == "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "100" and str(bin(cpu.Flags))[4:5] != "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "101" and str(bin(cpu.Flags))[3:4] == "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "110" and str(bin(cpu.Flags))[3:4] != "1":
+                    cpu.SP = cpu.registers[register1]
+                elif (str(bin(conditionals))[2:5]) == "111" and str(bin(cpu.Flags))[2:3] == "1":
+                    cpu.SP = cpu.registers[register1]
 
-        elif (str(bin(conditionals))[5:6]) == "1": #Jump to Address value
-            if (str(bin(conditionals))[2:5]) == "000":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "001" and str(bin(cpu.Flags))[5:6] == "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "010" and str(bin(cpu.Flags))[5:6] != "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "011" and str(bin(cpu.Flags))[4:5] == "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "100" and str(bin(cpu.Flags))[4:5] != "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "101" and str(bin(cpu.Flags))[3:4] == "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "110" and str(bin(cpu.Flags))[3:4] != "1":
-                cpu.SP = cpu.Memory[address1]
-            elif (str(bin(conditionals))[2:5]) == "111" and str(bin(cpu.Flags))[2:3] == "1":
-                cpu.SP = cpu.Memory[address1]
+            elif (str(bin(conditionals))[5:6]) == "1": #Jump to Address value
+                if (str(bin(conditionals))[2:5]) == "000":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "001" and str(bin(cpu.Flags))[5:6] == "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "010" and str(bin(cpu.Flags))[5:6] != "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "011" and str(bin(cpu.Flags))[4:5] == "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "100" and str(bin(cpu.Flags))[4:5] != "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "101" and str(bin(cpu.Flags))[3:4] == "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "110" and str(bin(cpu.Flags))[3:4] != "1":
+                    cpu.SP = cpu.Memory[address1]
+                elif (str(bin(conditionals))[2:5]) == "111" and str(bin(cpu.Flags))[2:3] == "1":
+                    cpu.SP = cpu.Memory[address1]
 
-    elif opcode == 14: #Call
-        cpu.PCSP.append(cpu.PC)
-        if conditionals == 0:
-            cpu.PC = cpu.registers[register1]
-        elif conditionals == 1:
-            cpu.PC = cpu.Memory[address1]
-    elif opcode == 15: #Return
-        cpu.PC = cpu.PCSP.pop()
+        case 14: #Call
+            cpu.PCSP.append(cpu.PC)
+            if conditionals == 0:
+                cpu.PC = cpu.registers[register1]
+            elif conditionals == 1:
+                cpu.PC = cpu.Memory[address1]
+        case 15: #Return
+            cpu.PC = cpu.PCSP.pop()
 
     cpu.PC = cpu.PC + 1
     currentLine += 1
