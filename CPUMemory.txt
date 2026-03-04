@@ -1,0 +1,3 @@
+80f0    #Load 240 into Reg. A
+8132    #Load 50 into Reg. B
+1010    #Add Reg. A and Reg. B
